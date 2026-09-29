@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Кошелёк">
+<meta name="theme-color" content="#111827">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23111827'/%3E%3Ctext x='50' y='72' font-size='58' text-anchor='middle'%3E%F0%9F%92%B0%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23111827'/%3E%3Ctext x='50' y='72' font-size='58' text-anchor='middle'%3E%F0%9F%92%B0%3C/text%3E%3C/svg%3E">
+<title>Кошелёк семьи + 2 ИП — калькулятор</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#f1f5f9;color:#111827}
+header{background:#111827;color:#fff;padding:12px 14px;position:sticky;top:0;z-index:5}
+header .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+header h1{margin:0;font-size:16px}
+.wallet{background:#fff;color:#111827;border-radius:14px;padding:12px;margin-top:10px;text-align:center}
+.wallet small{color:#64748b}
+.wallet b{font-size:32px;display:block}
+.sub{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px}
+.sub div{background:#1f2937;border-radius:10px;padding:7px 4px;text-align:center;font-size:11px}
+.sub div b{display:block;font-size:13px;margin-top:2px}
+.sub .inm b,.sub .inw b{color:#4ade80}.sub .exf b,.sub .exm b,.sub .exw b{color:#ff6b6b}
+.wrap{max-width:640px;margin:0 auto;padding:12px;padding-bottom:60px}
+.tabs{display:flex;gap:6px;margin:10px 0}
+.tabs button{flex:1;border:1px solid #e2e8f0;background:#fff;padding:10px;border-radius:10px;font-size:14px;cursor:pointer}
+.tabs button.active{background:#111827;color:#fff;border-color:#111827}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:14px;margin-bottom:12px}
+.mode{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.mode button{padding:13px;border-radius:12px;border:2px solid #e2e8f0;background:#f8fafc;font-size:16px;font-weight:700;cursor:pointer}
+.mode button.on-exp{background:#fee2e2;border-color:#dc2626;color:#991b1b}
+.mode button.on-inc{background:#dcfce7;border-color:#16a34a;color:#166534}
+.amount input{width:100%;font-size:34px;font-weight:800;text-align:center;padding:10px;border:2px solid #e2e8f0;border-radius:12px}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.pad button{font-size:22px;padding:13px;border-radius:12px;border:1px solid #e2e8f0;background:#f8fafc;cursor:pointer}
+.pad button:active{background:#e2e8f0}
+.owner{display:grid;gap:8px;margin:8px 0}
+.owner.o3{grid-template-columns:1fr 1fr 1fr}.owner.o2{grid-template-columns:1fr 1fr}
+.owner button{padding:12px 6px;border-radius:12px;border:2px solid #e2e8f0;background:#fff;font-size:14px;font-weight:700;cursor:pointer}
+.owner button.sel{border-color:#111827;background:#111827;color:#fff}
+.src{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+.src button{border:1px solid #e2e8f0;background:#f8fafc;border-radius:99px;padding:7px 12px;font-size:13px;cursor:pointer}
+.src button.sel{background:#111827;color:#fff;border-color:#111827}
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cats button{border:1px solid #e2e8f0;background:#fff;border-radius:12px;padding:12px 6px;font-size:13px;cursor:pointer;display:flex;flex-direction:column;gap:4px;align-items:center}
+.cats button span{font-size:24px}
+.cats button:active{background:#111827;color:#fff}
+.cats.biz button{background:#fff7ed;border-color:#fed7aa}
+h2{margin:0 0 8px;font-size:16px}h3{font-size:13px;color:#64748b;margin:12px 0 6px;text-transform:uppercase}
+.big-add{width:100%;margin-top:10px;padding:15px;border:0;border-radius:12px;font-size:17px;font-weight:800;cursor:pointer;background:#16a34a;color:#fff}
+table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:8px 6px;border-bottom:1px solid #f1f5f9;text-align:left}
+.mut{color:#64748b;font-size:12px}.del{border:0;background:none;color:#dc2626;font-size:18px;cursor:pointer}
+.row{display:flex;gap:8px}.row>*{flex:1}
+input,select{padding:10px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;width:100%}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;background:#f1f5f9}
+/* 🌙 тёмная тема */
+body.dark{background:#0b0f19;color:#e5e7eb}
+body.dark .card{background:#151c2e;border-color:#2a3350;color:#e5e7eb}
+body.dark .tabs button{background:#151c2e;border-color:#2a3350;color:#e5e7eb}
+body.dark .tabs button.active{background:#e5e7eb;color:#111827;border-color:#e5e7eb}
+body.dark .mode button{background:#151c2e;border-color:#2a3350;color:#e5e7eb}
+body.dark .amount input{background:#0f1627;border-color:#2a3350;color:#fff}
+body.dark .pad button{background:#1b2440;border-color:#2a3350;color:#e5e7eb}
+body.dark .pad button:active{background:#2a3350}
+body.dark .owner button{background:#151c2e;border-color:#2a3350;color:#e5e7eb}
+body.dark .owner button.sel{background:#e5e7eb;color:#111827;border-color:#e5e7eb}
+body.dark .src button{background:#1b2440;border-color:#2a3350;color:#e5e7eb}
+body.dark .src button.sel{background:#e5e7eb;color:#111827;border-color:#e5e7eb}
+body.dark .cats button{background:#151c2e;border-color:#2a3350;color:#e5e7eb}
+body.dark .cats.biz button{background:#2a1e10;border-color:#7c4a12;color:#fed7aa}
+body.dark input,body.dark select{background:#0f1627;border-color:#2a3350;color:#e5e7eb}
+body.dark table td,body.dark table th{border-color:#2a3350}
+body.dark .mut{color:#94a3b8}
+body.dark h3{color:#94a3b8}
+body.dark .wallet{background:#151c2e;color:#e5e7eb}
+body.dark .wallet small{color:#94a3b8}
+/* ✨ Vista Aero-блеск для всех кнопок */
+button{position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -2px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.18);transition:filter .12s,transform .05s,box-shadow .12s}
+button::after{content:"";position:absolute;top:0;left:0;right:0;height:48%;background:linear-gradient(to bottom,rgba(255,255,255,.6),rgba(255,255,255,.06));pointer-events:none;border-radius:inherit}
+button:hover{filter:brightness(1.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.75),inset 0 -2px 3px rgba(0,0,0,.06),0 0 12px rgba(56,150,255,.5)}
+button:active{transform:translateY(1px);filter:brightness(.93)}
+button.del,button.del:hover{box-shadow:none;filter:none;transform:none}
+button.del::after{display:none}
+/* 📱 узкие экраны (iPhone 12 — 390px) */
+@media(max-width:480px){
+.sub{gap:4px}
+.sub div{font-size:10px;padding:6px 2px}
+.sub div b{font-size:11px}
+.wallet b{font-size:26px}
+.amount input{font-size:28px}
+.pad button{padding:11px;font-size:20px}
+.cats button{font-size:12px;padding:10px 4px}
+.owner button{font-size:12px;padding:10px 4px}
+header h1{font-size:14px}
+.wrap{padding:8px;padding-bottom:50px}
+}
+</style>
+</head>
+<body>
+<header>
+<div class="top"><h1>💰 Общий кошелёк</h1><input type="month" id="m" style="width:auto;padding:6px"></div>
+<div class="wallet"><small>Общий кошелёк за месяц (доходы − все расходы)</small><b id="w-total">0 ₸</b><div class="mut" id="w-sub"></div></div>
+<div class="sub">
+<div class="inm">👨 Муж<br>доход<b id="s-im">0</b></div>
+<div class="inw">👩 Жена<br>доход<b id="s-iw">0</b></div>
+<div class="exf">🏠 Семья<b id="s-ef">0</b></div>
+<div class="exm">💼 Муж ИП<b id="s-em">0</b></div>
+<div class="exw">💼 Жена ИП<b id="s-ew">0</b></div>
+</div>
+</header>
+<div class="wrap">
+<div class="tabs"><button id="t1" class="active" onclick="tab('calc')">🧮 Калькулятор</button><button id="t2" onclick="tab('hist')">📋 История</button><button id="t3" onclick="tab('set')">⚙️ Настройки</button></div>
+
+<div id="p-calc" class="card">
+<div class="mode"><button id="b-exp" onclick="setMode('expense')">− Расход</button><button id="b-inc" onclick="setMode('income')">+ Доход</button></div>
+<div class="amount"><input id="amt" inputmode="decimal" placeholder="0" autocomplete="off"></div>
+<div class="pad">
+<button onclick="press('1')">1</button><button onclick="press('2')">2</button><button onclick="press('3')">3</button>
+<button onclick="press('4')">4</button><button onclick="press('5')">5</button><button onclick="press('6')">6</button>
+<button onclick="press('7')">7</button><button onclick="press('8')">8</button><button onclick="press('9')">9</button>
+<button onclick="press('00')">00</button><button onclick="press('0')">0</button><button onclick="back()">⌫</button>
+</div>
+<div class="row"><button onclick="clr()" style="padding:10px;border-radius:10px;border:1px solid #e2e8f0;background:#fff">C — очистить</button><div class="mut" style="align-self:center">Введи сумму → ткни пункт 👇</div></div>
+<div style="margin-top:8px"><input id="cmt" placeholder="✏️ Комментарий (необязательно): кому дали в долг, за что..." autocomplete="off"></div>
+
+<!-- ДОХОД -->
+<div id="box-inc" style="display:none">
+<h3>Чей доход? — сразу плюс в общий кошелёк</h3>
+<div class="owner o2"><button id="o-ip1" onclick="setInc('ip1')">👨 Муж</button><button id="o-ip2" onclick="setInc('ip2')">👩 Жена</button></div>
+<button class="big-add" onclick="addIncome()">+ Добавить доход в общий кошелёк</button>
+</div>
+
+<!-- РАСХОД -->
+<div id="box-exp">
+<h3>Чей расход?</h3>
+<div class="owner o3"><button id="e-family" onclick="setExp('family')">🏠 Семья</button><button id="e-ip1" onclick="setExp('ip1')">💼 Муж ИП</button><button id="e-ip2" onclick="setExp('ip2')">💼 Жена ИП</button></div>
+<h3 id="cat-title">Пункты расхода — ткни чтобы списать</h3>
+<div class="cats" id="cats"></div>
+</div>
+</div>
+
+<div id="p-hist" class="card" style="display:none">
+<h2>История <span class="mut" id="h-month"></span></h2>
+<div class="src" id="hf-period" style="margin-bottom:8px"></div>
+<div><input id="hf-q" placeholder="🔍 Поиск: комментарий, пункт..." oninput="render()" autocomplete="off"></div>
+<div class="row" style="margin-top:8px">
+<div><select id="hf-type" onchange="render()"><option value="all">Все типы</option><option value="expense">− Расходы</option><option value="income">+ Доходы</option></select></div>
+<div><select id="hf-prof" onchange="render()"><option value="all">Все кошельки</option><option value="family">🏠 Семья</option><option value="ip1">💼 Муж ИП</option><option value="ip2">💼 Жена ИП</option></select></div>
+<div style="flex:0 0 80px"><button onclick="hfReset()" style="padding:10px;border-radius:8px;border:1px solid #e2e8f0;background:#fff;width:100%">✕</button></div>
+</div>
+<div id="h-sum" class="mut" style="margin-top:8px"></div>
+<table><tbody id="h-body"></tbody></table>
+<div class="row" style="margin-top:10px"><button onclick="expCsv()" style="padding:10px;border-radius:8px;border:1px solid #e2e8f0;background:#fff">⬇ CSV</button><button onclick="wipe()" style="padding:10px;border-radius:8px;border:0;background:#fee2e2;color:#991b1b">Удалить всё</button></div>
+</div>
+
+<div id="p-set" class="card" style="display:none">
+<h2>Настройки</h2>
+<div class="row"><div><label class="mut">Имя мужа</label><input id="s-n1"></div><div><label class="mut">Имя жены</label><input id="s-n2"></div></div>
+<div style="margin-top:8px"><label class="mut">Валюта</label><select id="s-c"><option value="₸">₸ Тенге</option><option value="₽">₽ Рубль</option><option value="$">$ Доллар</option><option value="€">€ Евро</option><option value="с">с Сом</option></select></div>
+<div style="margin-top:8px"><label class="mut">Режим экрана</label><select id="s-t" onchange="setTheme(this.value)"><option value="light">☀️ Белый</option><option value="dark">🌙 Чёрный</option></select></div>
+<div style="margin-top:8px"><label class="mut">🖼️ Обои</label><select id="s-w" onchange="setWall(this.value)"><option value="none">Стандартные</option><option value="sunset">🌅 Закат</option><option value="ocean">🌊 Океан</option><option value="forest">🌲 Лес</option><option value="night">🌌 Ночь</option><option value="berry">🍇 Ягода</option><option value="gold">✨ Золото</option></select></div>
+<div class="row" style="margin-top:8px">
+<button onclick="setWall('sunset')" title="Закат" style="height:44px;border-radius:10px;border:1px solid #e2e8f0;background:linear-gradient(135deg,#ff9a56,#ff5e78,#a855f7)">🌅</button>
+<button onclick="setWall('ocean')" title="Океан" style="height:44px;border-radius:10px;border:1px solid #e2e8f0;background:linear-gradient(135deg,#06b6d4,#3b82f6,#1e3a8a)">🌊</button>
+<button onclick="setWall('forest')" title="Лес" style="height:44px;border-radius:10px;border:1px solid #e2e8f0;background:linear-gradient(135deg,#34d399,#065f46,#022c22)">🌲</button>
+<button onclick="setWall('night')" title="Ночь" style="height:44px;border-radius:10px;border:1px solid #e2e8f0;background:linear-gradient(135deg,#0f172a,#6d28d9,#0f172a)">🌌</button>
+<button onclick="setWall('berry')" title="Ягода" style="height:44px;border-radius:10px;border:1px solid #e2e8f0;background:linear-gradient(135deg,#f9a8d4,#c084fc,#818cf8)">🍇</button>
+<button onclick="setWall('gold')" title="Золото" style="height:44px;border-radius:10px;border:1px solid #e2e8f0;background:linear-gradient(135deg,#fde68a,#f59e0b,#7c2d12)">✨</button>
+<button onclick="setWall('none')" title="Стандартные" style="height:44px;border-radius:10px;border:1px solid #e2e8f0;background:#f1f5f9">⬜</button>
+</div>
+<div style="margin-top:10px"><button onclick="saveSet()" style="padding:12px;border-radius:10px;border:0;background:#111827;color:#fff;width:100%">Сохранить</button></div>
+<p class="mut">Данные только на этом устройстве. Семейные пункты: Еда, Проезд, Коммуналка и т.д. уже вшиты. Бизнес-пункты общие для обоих ИП.</p>
+</div>
+</div>
+
+<script>
+const KEY='family_ip_budget_v1';
+const FAM=[["🍔","Еда / Продукты"],["🧾","Коммуналка"],["🚗","Авто"],["💊","Здоровье"],["🧒","Дети"],["👕","Одежда"],["☕","Кафе"],["🎁","Подарки"],["💳","Кредиты"],["🤝","Мы дали в долг"],["➕","Прочее"]];
+const BIZ=[["🧾","Налоги"],["🏢","Аренда"],["📦","Товар"],["📣","Реклама"],["👷","Зарплата"],["🚚","Доставка"],["➕","Прочее бизнес"]];
+const WALLS={none:'',sunset:'linear-gradient(135deg,#ff9a56,#ff5e78,#a855f7)',ocean:'linear-gradient(135deg,#06b6d4,#3b82f6,#1e3a8a)',forest:'linear-gradient(135deg,#34d399,#065f46,#022c22)',night:'linear-gradient(135deg,#0f172a,#6d28d9,#0f172a)',berry:'linear-gradient(135deg,#f9a8d4,#c084fc,#818cf8)',gold:'linear-gradient(135deg,#fde68a,#f59e0b,#7c2d12)'};
+let db=load(),mode='expense',expOwner='family',incOwner='ip1',hPeriod='month',editingId=null;
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+const PERIODS=[['week','Неделя'],['month','Месяц'],['half','Полгода'],['year','Год'],['all','Всё']];
+function setHPeriod(p){hPeriod=p;render()}
+function inHPeriod(ds){if(hPeriod==='all')return true;if(hPeriod==='month'){const m=$('m').value;return !m||ds.slice(0,7)===m}const t=new Date();t.setHours(0,0,0,0);let from=new Date(t);if(hPeriod==='week')from.setDate(t.getDate()-6);if(hPeriod==='half')from.setMonth(t.getMonth()-5,1);if(hPeriod==='year')from.setFullYear(t.getFullYear()-1,t.getMonth(),1);const fs=from.toISOString().slice(0,10);return ds>=fs&&ds<=today()}
+function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d.ops)return d}}catch(e){}return{ops:[],settings:{ip1:'Муж',ip2:'Жена',cur:'₸'}}}
+function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function fmt(n){return Number(n||0).toLocaleString('ru-RU')+' '+(db.settings.cur||'₸')}
+const $=id=>document.getElementById(id);
+$('m').value=new Date().toISOString().slice(0,7);
+$('s-n1').value=db.settings.ip1;$('s-n2').value=db.settings.ip2;$('s-c').value=db.settings.cur||'₸';$('s-t').value=db.settings.theme||'light';$('s-w').value=db.settings.wall||'none';applyTheme();applyWall();
+function tab(t){['calc','hist','set'].forEach(k=>$('p-'+k).style.display=k===t?'':'none');['t1','t2','t3'].forEach(k=>$(k).classList.remove('active'));if(t==='calc')$('t1').classList.add('active');if(t==='hist')$('t2').classList.add('active');if(t==='set')$('t3').classList.add('active')}
+function setMode(m){mode=m;render()}
+function setExp(o){expOwner=o;render()}
+function setInc(o){incOwner=o;render()}
+function press(d){$('amt').value=($('amt').value+d).replace(/^0+(?=\d)/,'')}
+function back(){$('amt').value=$('amt').value.slice(0,-1)}
+function clr(){$('amt').value=''}
+function getSum(){const v=parseFloat(String($('amt').value).replace(',','.'));return v>0?v:0}
+function today(){return new Date().toISOString().slice(0,10)}
+function mOps(){const m=$('m').value;return db.ops.filter(o=>!m||o.date.slice(0,7)===m)}
+function addExpense(cat){const s=getSum();if(!s)return alert('Сначала введи сумму цифрами');const note=$('cmt').value.trim();db.ops.push({id:Date.now(),type:'expense',profile:expOwner,cat,sum:s,date:today(),note});save();clr();$('cmt').value='';render()}
+function addIncome(){const s=getSum();if(!s)return alert('Сначала введи сумму цифрами');const note=$('cmt').value.trim();db.ops.push({id:Date.now(),type:'income',profile:incOwner,cat:'Доход',sum:s,date:today(),note});save();clr();$('cmt').value='';render();alert('Доход добавлен в общий кошелёк ✅')}
+function render(){
+$('b-exp').className=mode==='expense'?'on-exp':'';$('b-inc').className=mode==='income'?'on-inc':'';
+$('box-inc').style.display=mode==='income'?'':'none';$('box-exp').style.display=mode==='expense'?'':'none';
+// owners labels
+$('o-ip1').textContent='👨 '+(db.settings.ip1||'Муж');$('o-ip2').textContent='👩 '+(db.settings.ip2||'Жена');
+$('o-ip1').className=incOwner==='ip1'?'sel':'';$('o-ip2').className=incOwner==='ip2'?'sel':'';
+$('e-family').className=expOwner==='family'?'sel':'';$('e-ip1').className=expOwner==='ip1'?'sel':'';$('e-ip2').className=expOwner==='ip2'?'sel':'';
+$('e-ip1').textContent='💼 '+(db.settings.ip1||'Муж')+' ИП';$('e-ip2').textContent='💼 '+(db.settings.ip2||'Жена')+' ИП';
+// cats
+const list=expOwner==='family'?FAM:BIZ;
+$('cat-title').textContent=expOwner==='family'?'Пункты расхода — ткни чтобы списать':('Бизнес-расход ('+(expOwner==='ip1'?db.settings.ip1:db.settings.ip2)+') — ткни чтобы списать');
+$('cats').className='cats'+(expOwner==='family'?'':' biz');
+$('cats').innerHTML=list.map(([e,c])=>`<button onclick="addExpense('${c}')"><span>${e}</span>${c}</button>`).join('');
+// wallet
+const F=mOps();const si1=F.filter(o=>o.type==='income'&&o.profile==='ip1').reduce((s,o)=>s+o.sum,0);
+const si2=F.filter(o=>o.type==='income'&&o.profile==='ip2').reduce((s,o)=>s+o.sum,0);
+const sef=F.filter(o=>o.type==='expense'&&o.profile==='family').reduce((s,o)=>s+o.sum,0);
+const se1=F.filter(o=>o.type==='expense'&&o.profile==='ip1').reduce((s,o)=>s+o.sum,0);
+const se2=F.filter(o=>o.type==='expense'&&o.profile==='ip2').reduce((s,o)=>s+o.sum,0);
+const tot=(si1+si2)-(sef+se1+se2);
+$('w-total').textContent=fmt(tot);$('w-total').style.color=tot>=0?'#16a34a':'#dc2626';
+$('s-im').textContent='+'+fmt(si1);$('s-iw').textContent='+'+fmt(si2);$('s-ef').textContent='−'+fmt(sef);$('s-em').textContent='−'+fmt(se1);$('s-ew').textContent='−'+fmt(se2);
+$('w-sub').textContent='Доходы '+fmt(si1+si2)+' • Расходы '+fmt(sef+se1+se2);
+// hist
+const pLbl={week:'неделя',month:$('m').value||'месяц',half:'полгода',year:'год',all:'всё время'}[hPeriod];
+$('h-month').textContent=pLbl;
+$('hf-period').innerHTML=PERIODS.map(([v,l])=>`<button class="${v===hPeriod?'sel':''}" onclick="setHPeriod('${v}')">${l}</button>`).join('');
+const hq=(($('hf-q')&&$('hf-q').value)||'').toLowerCase(),ht=$('hf-type')?$('hf-type').value:'all',hp=$('hf-prof')?$('hf-prof').value:'all';
+const rows=[...db.ops].filter(o=>inHPeriod(o.date)).filter(o=>(ht==='all'||o.type===ht)&&(hp==='all'||o.profile===hp)&&(!hq||((o.cat||'')+' '+(o.note||'')).toLowerCase().includes(hq))).sort((a,b)=>(b.date+(b.id||'')).localeCompare(a.date+(a.id||''))).slice(0,300);
+const rInc=rows.filter(o=>o.type==='income').reduce((s,o)=>s+o.sum,0),rExp=rows.filter(o=>o.type==='expense').reduce((s,o)=>s+o.sum,0);
+$('h-sum').textContent=`Операций: ${rows.length} • +${fmt(rInc)} • −${fmt(rExp)}`;
+$('h-body').innerHTML=rows.map(o=>{if(o.id===editingId){return `<tr><td colspan="3"><div class="row"><div><label class="mut">📅 Дата</label><input type="date" id="e-date" value="${esc(o.date)}"></div><div><label class="mut">Сумма</label><input type="number" id="e-sum" value="${o.sum}" step="0.01" min="0"></div></div><div style="margin-top:6px"><label class="mut">Кошелёк</label><select id="e-prof"><option value="family"${o.profile==='family'?' selected':''}>🏠 Семья</option><option value="ip1"${o.profile==='ip1'?' selected':''}>👨‍💼 ${esc(db.settings.ip1||'Муж')}</option><option value="ip2"${o.profile==='ip2'?' selected':''}>👩‍💼 ${esc(db.settings.ip2||'Жена')}</option></select></div><div style="margin-top:6px"><label class="mut">Пункт</label><input id="e-cat" value="${esc(o.cat)}"></div><div style="margin-top:6px"><label class="mut">Комментарий</label><input id="e-note" value="${esc(o.note||'')}" placeholder="кому, за что..."></div><div class="row" style="margin-top:8px"><button onclick="saveEdit(${o.id})" style="padding:10px;border-radius:8px;border:0;background:#16a34a;color:#fff;font-weight:700">💾 Сохранить</button><button onclick="cancelEdit()" style="padding:10px;border-radius:8px;border:1px solid #e2e8f0;background:#fff">Отмена</button></div></td></tr>`}let who='🏠 Семья';if(o.profile==='ip1')who=o.type==='income'?('👨‍💼 '+(db.settings.ip1||'Муж')+' +'):('👨‍💼 '+(db.settings.ip1||'Муж')+' • 💼');else if(o.profile==='ip2')who=o.type==='income'?('👩‍💼 '+(db.settings.ip2||'Жена')+' +'):('👩‍💼 '+(db.settings.ip2||'Жена')+' • 💼');else who=o.type==='income'?'🏠 Семья +':'🏠 Семья';const nt=o.note?`<br>✏️ ${esc(o.note)}`:'';return `<tr><td>${o.date}<br><span class="mut">${who} • ${esc(o.cat)}${nt}</span></td><td style="text-align:right;color:${o.type==='income'?'#16a34a':'#dc2626'}"><b>${o.type==='income'?'+':'−'}${fmt(o.sum)}</b></td><td style="white-space:nowrap"><button class="del" style="color:#2563eb" onclick="editOp(${o.id})">✏️</button><button class="del" onclick="del(${o.id})">×</button></td></tr>`}).join('')||'<tr><td class="mut">Пока пусто</td></tr>';
+}
+function del(id){if(!confirm('Удалить?'))return;db.ops=db.ops.filter(o=>o.id!==id);save();render()}
+function editOp(id){editingId=id;render()}
+function cancelEdit(){editingId=null;render()}
+function saveEdit(id){const o=db.ops.find(x=>x.id===id);if(!o)return;const s=parseFloat(String($('e-sum').value).replace(',','.'));if(!s||s<=0)return alert('Проверь сумму');o.sum=s;o.date=$('e-date').value||o.date;o.note=$('e-note').value.trim();o.cat=$('e-cat').value.trim()||o.cat;o.profile=$('e-prof').value||o.profile;save();editingId=null;render()}
+function hfReset(){$('hf-q').value='';$('hf-type').value='all';$('hf-prof').value='all';render()}
+function wipe(){if(!confirm('Удалить ВСЕ записи?'))return;db.ops=[];save();render()}
+function expCsv(){const r=[['date','type','profile','cat','sum','note'],...db.ops.map(o=>[o.date,o.type,o.profile,'"'+o.cat+'"',o.sum,'"'+(o.note||'').replace(/"/g,'""')+'"'])];const b=new Blob([r.map(x=>x.join(',')).join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='koshelek.csv';a.click()}
+function saveSet(){db.settings.ip1=$('s-n1').value.trim()||'Муж';db.settings.ip2=$('s-n2').value.trim()||'Жена';db.settings.cur=$('s-c').value;db.settings.theme=$('s-t').value;db.settings.wall=$('s-w').value;save();applyTheme();applyWall();render();alert('Сохранено')}
+function setTheme(v){db.settings.theme=v;save();applyTheme()}
+function applyTheme(){document.body.classList.toggle('dark',(db.settings.theme||'light')==='dark')}
+function setWall(v){db.settings.wall=v;save();applyWall();if($('s-w'))$('s-w').value=v}
+function applyWall(){const w=WALLS[db.settings.wall||'none']||'';if(!w){document.body.style.background='';document.body.style.backgroundAttachment=''}else{document.body.style.background=w;document.body.style.backgroundAttachment='fixed'}}
+$('m').onchange=render;$('amt').addEventListener('keydown',e=>{if(e.key==='Enter'){mode==='income'?addIncome():null}});
+render();
+</script>
+</body>
+</html>

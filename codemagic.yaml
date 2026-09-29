@@ -1,0 +1,32 @@
+workflows:
+  ios-unsigned-ipa:
+    name: iOS unsigned IPA
+    max_build_duration: 30
+    instance_type: mac_mini_m2
+    working_directory: ios-app
+    environment:
+      xcode: latest
+    scripts:
+      - name: Copy web app
+        script: |
+          cp ../index.html ./index.html
+          ls -la
+      - name: Archive without signing
+        script: |
+          xcodebuild \
+            -project KoshelekApp.xcodeproj \
+            -target KoshelekApp \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath $PWD/build/KoshelekApp.xcarchive \
+            archive \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY=""
+      - name: Package IPA
+        script: |
+          rm -rf Payload KoshelekApp-unsigned.ipa
+          mkdir Payload
+          cp -R build/KoshelekApp.xcarchive/Products/Applications/KoshelekApp.app Payload/
+          zip -qry KoshelekApp-unsigned.ipa Payload
+    artifacts:
+      - KoshelekApp-unsigned.ipa
